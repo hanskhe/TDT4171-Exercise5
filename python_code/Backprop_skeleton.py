@@ -84,18 +84,36 @@ class NN: #Neural Network
         self.outputActivation = logFunc(sum)
         return self.outputActivation
 
-    def computeOutputDelta(self):
+    def computeOutputDelta(self,oa,ob):
         #TODO: Implement the delta function for the output layer (see exercise text)
+        Pab = 1/(1+math.exp(-(oa-ob)))
+        deltaoa = logFuncDerivative(oa)*(1-Pab)
+        deltaob = logFuncDerivative(ob)*(1-Pab)
+        return deltaoa, deltaob
 
-    def computeHiddenDelta(self):
-        #TODO: Implement the delta function for the hidden layer (see exercise text)
+    def computeHiddenDelta(self, deltaoa, deltaob):
+        deltahas = []
+        for i in range(len(self.hiddenActivations)):
+            deltahas[i] = logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(deltaoa-deltaob)
 
-    def updateWeights(self):
+        deltahbs = []
+        for i in range(len(self.prevhiddenActivations)):
+            deltahbs[i] = logFuncDerivative(self.prevhiddenActivations[i])*self.weightsOutput[i]*(deltaoa-deltaob)
+
+        return deltahas, deltahbs
+
+            
+
+
+    def updateWeights(self, deltahas, deltahbs):
         #TODO: Update the weights of the network using the deltas (see exercise text)
+        for i in range(len(self.weightsInput)):
+            for j in range(len(self.hiddenActivations)):
+                self.weightsInput[i][j] += self.learningRate*(deltahas[j]*self.previnputActivations[i]-deltahbs[j]*self.inputActivation[i])
 
-    def backpropagate(self):
-        self.computeOutputDelta()
-        self.computeHiddenDelta()
+    def backpropagate(self, oa, ob):
+        deltaoa,deltaob = self.computeOutputDelta(oa, ob)
+        self.computeHiddenDelta(deltaoa, deltaob)
         self.updateWeights()
 
     #Prints the network weights
@@ -111,6 +129,11 @@ class NN: #Neural Network
         #TODO: Train the network on all patterns for a number of iterations.
         #To measure performance each iteration: Run for 1 iteration, then count misordered pairs.
         #TODO: Training is done  like this (details in exercise text):
+        deltahs = []
+        for pair in patterns:
+            oa = propagate(pair[0])
+            ob = propagate(pair[1])
+            backpropagate(oa,ob)
         #-Propagate A
         #-Propagate B
         #-Backpropagate
