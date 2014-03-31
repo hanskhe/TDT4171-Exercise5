@@ -73,7 +73,7 @@ def runRanker(trainingset, testset):
     for qid in dhTesting.dataset.keys():
         #This iterates through every query ID in our test set
         dataInstance=dhTesting.dataset[qid]
-        dataInstance=dhTraining.dataset[qid] #All data instances (query, features, rating) for query qid
+        
         for i in range(len(dataInstance)-1):
             for j in range(i+1,len(dataInstance)):
                 if (dataInstance[i].rating != dataInstance[j].rating):
@@ -85,16 +85,18 @@ def runRanker(trainingset, testset):
         #TODO: Hint: The testing will be easier for you if you also now order the pairs - it will make it easy to see if the ANN agrees with your ordering.
 
     #Check ANN performance before training
-    nn.countMisorderedPairs(testPatterns)
+    print("first")
+    print(nn.countMisorderedPairs(testPatterns))
     for i in range(25):
         #Running 25 iterations, measuring testing performance after each round of training.
         #Training
         nn.train(trainingPatterns,iterations=1)
         #Check ANN performance after training.
-        nn.countMisorderedPairs(testPatterns)
+        print("second")
+        print(nn.countMisorderedPairs(testPatterns))
 
     #TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
 
 
 
-runRanker("train.txt","test.txt")
+runRanker("../data_sets/train.txt","../data_sets/test.txt")

@@ -94,11 +94,11 @@ class NN: #Neural Network
     def computeHiddenDelta(self, deltaoa, deltaob):
         deltahas = []
         for i in range(len(self.hiddenActivations)):
-            deltahas[i] = logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(deltaoa-deltaob)
+            deltahas.append(logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(deltaoa-deltaob))
 
         deltahbs = []
-        for i in range(len(self.prevhiddenActivations)):
-            deltahbs[i] = logFuncDerivative(self.prevhiddenActivations[i])*self.weightsOutput[i]*(deltaoa-deltaob)
+        for i in range(len(self.prevHiddenActivations)):
+            deltahbs.append(logFuncDerivative(self.prevHiddenActivations[i])*self.weightsOutput[i]*(deltaoa-deltaob))
 
         return deltahas, deltahbs
 
@@ -109,12 +109,12 @@ class NN: #Neural Network
         #TODO: Update the weights of the network using the deltas (see exercise text)
         for i in range(len(self.weightsInput)):
             for j in range(len(self.hiddenActivations)):
-                self.weightsInput[i][j] += self.learningRate*(deltahas[j]*self.previnputActivations[i]-deltahbs[j]*self.inputActivation[i])
+                self.weightsInput[i][j] += self.learningRate*(deltahas[j]*self.prevInputActivations[i]-deltahbs[j]*self.inputActivation[i])
 
     def backpropagate(self, oa, ob):
         deltaoa,deltaob = self.computeOutputDelta(oa, ob)
-        self.computeHiddenDelta(deltaoa, deltaob)
-        self.updateWeights()
+        deltahas, deltahbs = self.computeHiddenDelta(deltaoa, deltaob)
+        self.updateWeights(deltahas, deltahbs)
 
     #Prints the network weights
     def weights(self):
@@ -130,9 +130,9 @@ class NN: #Neural Network
         #To measure performance each iteration: Run for 1 iteration, then count misordered pairs.
         #TODO: Training is done  like this (details in exercise text):
         for pair in patterns:
-            oa = propagate(pair[0])
-            ob = propagate(pair[1])
-            backpropagate(oa,ob)
+            oa = self.propagate(pair[0].features)
+            ob = self.propagate(pair[1].features)
+            self.backpropagate(oa,ob)
         #-Propagate A
         #-Propagate B
         #-Backpropagate
@@ -153,21 +153,22 @@ class NN: #Neural Network
         num_misses = 0
         a_winner = False
         for pattern in patterns:
-            a = self.propagate(pattern[0])
-            b = self.propagate(pattern[1])
+            a = self.propagate(pattern[0].features)
+            b = self.propagate(pattern[1].features)
             a_winner = a>b
             if (a_winner):
-                if(a.rating>b.rating):
+                if(pattern[0].rating>pattern[0].rating):
                     num_right += 1
                 else:
                     num_misses += 1
             else:
-                if(b.rating>a.rating):
+                if(pattern[1].rating>pattern[1].rating):
                     num_right += 1
                 else:
                     num_misses += 1
-                    
-        return num_misses/(num_right+num_misses)
+        print(num_misses)
+        print(num_right)
+        return num_misses/(num_right+num_misses+0.0)
 
 
 
