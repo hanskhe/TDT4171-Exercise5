@@ -129,7 +129,6 @@ class NN: #Neural Network
         #TODO: Train the network on all patterns for a number of iterations.
         #To measure performance each iteration: Run for 1 iteration, then count misordered pairs.
         #TODO: Training is done  like this (details in exercise text):
-        deltahs = []
         for pair in patterns:
             oa = propagate(pair[0])
             ob = propagate(pair[1])
@@ -149,4 +148,27 @@ class NN: #Neural Network
         #end of for
         #TODO: Calculate the ratio of correct answers:
         #errorRate = numMisses/(numRight+numMisses)
+
+        num_right = 0
+        num_misses = 0
+        a_winner = False
+        for pattern in patterns:
+            a = self.propagate(pattern[0])
+            b = self.propagate(pattern[1])
+            a_winner = a>b
+            if (a_winner):
+                if(a.rating>b.rating):
+                    num_right += 1
+                else:
+                    num_misses += 1
+            else:
+                if(b.rating>a.rating):
+                    num_right += 1
+                else:
+                    num_misses += 1
+                    
+        return num_misses/(num_right+num_misses)
+
+
+
         pass
