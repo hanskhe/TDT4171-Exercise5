@@ -51,7 +51,7 @@ def runRanker(trainingset, testset):
     dhTesting = dataHolder(testset)
 
     #Creating an ANN instance - feel free to experiment with the learning rate (the third parameter).
-    nn = Bp.NN(46,10,0.001)
+    nn = Bp.NN(46,10,1)
 
     #TODO: The lists below should hold training patterns in this format: [(data1Features,data2Features), (data1Features,data3Features), ... , (dataNFeatures,dataMFeatures)]
     #TODO: The training set needs to have pairs ordered so the first item of the pair has a higher rating.
