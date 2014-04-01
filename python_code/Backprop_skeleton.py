@@ -84,11 +84,11 @@ class NN: #Neural Network
         self.outputActivation = logFunc(sum)
         return self.outputActivation
 
-    def computeOutputDelta(self,oa,ob):
+    def computeOutputDelta(self):
         #TODO: Implement the delta function for the output layer (see exercise text)
-        Pab = 1/(1+math.exp(-(oa-ob)))
-        self.prevDeltaOutput = logFuncDerivative(oa)*(1-Pab)
-        self.deltaOutput = logFuncDerivative(ob)*(1-Pab)
+        Pab = 1.0/(1+math.exp(self.prevOutputActivation+self.outputActivation))
+        self.prevDeltaOutput = logFuncDerivative(self.prevOutputActivation)*(1-Pab)
+        self.deltaOutput = logFuncDerivative(self.outputActivation)*(1-Pab)
 
     def computeHiddenDelta(self):
         for i in range(len(self.prevHiddenActivations)):
@@ -105,8 +105,8 @@ class NN: #Neural Network
         for i in range(self.numHidden):
             self.weightsOutput[i] = self.weightsOutput[i] + self.learningRate*(self.prevHiddenActivations[i]*self.prevDeltaOutput-self.hiddenActivations[i]*self.deltaOutput)
 
-    def backpropagate(self, oa, ob):
-        self.computeOutputDelta(oa, ob)
+    def backpropagate(self):
+        self.computeOutputDelta()
         self.computeHiddenDelta()
         self.updateWeights()
 
@@ -124,9 +124,9 @@ class NN: #Neural Network
         #To measure performance each iteration: Run for 1 iteration, then count misordered pairs.
         #TODO: Training is done  like this (details in exercise text):
         for pair in patterns:
-            oa = self.propagate(pair[0].features)
-            ob = self.propagate(pair[1].features)
-            self.backpropagate(oa,ob)
+            self.propagate(pair[0].features)
+            self.propagate(pair[1].features)
+            self.backpropagate()
         #-Propagate A
         #-Propagate B
         #-Backpropagate
@@ -150,6 +150,10 @@ class NN: #Neural Network
             a = self.propagate(pattern[0].features)
             b = self.propagate(pattern[1].features)
             a_winner = a>b
+            print("propagate")
+            print(a)
+            print(b)
+            print(a_winner)
             if (a_winner):
                 if(pattern[0].rating>pattern[1].rating):
                     num_right += 1
