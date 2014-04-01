@@ -92,7 +92,7 @@ def runRanker(trainingset, testset):
         #Training
         nn.train(trainingPatterns,iterations=1)
         #Check ANN performance after training.
-        print("second")
+        print("Iteration #" + str(i))
         print(nn.countMisorderedPairs(testPatterns))
 
     #TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
