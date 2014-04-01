@@ -1,6 +1,7 @@
 __author__ = 'hanskhe'
 __author__ = 'juularthur'
 import Backprop_skeleton as Bp
+from pylab import *
 
 #Class for holding your data - one object for each line in the dataset
 class dataInstance:
@@ -86,17 +87,22 @@ def runRanker(trainingset, testset):
 
     #Check ANN performance before training
     print("first")
-    print(nn.countMisorderedPairs(testPatterns))
-    for i in range(3):
+    errorPercent = []
+    errorPercent.append(nn.countMisorderedPairs(testPatterns))
+    numIterations = 3
+    for i in range(numIterations):
         #Running 25 iterations, measuring testing performance after each round of training.
         #Training
         nn.train(trainingPatterns,iterations=1)
         #Check ANN performance after training.
         print("Iteration #" + str(i))
-        print(nn.countMisorderedPairs(testPatterns))
+        errorPercent.append(nn.countMisorderedPairs(testPatterns))
 
     #TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
-
+    #Printing graph with pylab
+    plot(range(1,numIterations+2),errorPercent)
+    ylim([0,1])
+    show()
 
 
 runRanker("../data_sets/train.txt","../data_sets/test.txt")
