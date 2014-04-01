@@ -97,14 +97,13 @@ class NN: #Neural Network
         for i in range(len(self.hiddenActivations)):
             self.deltaHidden[i]= (logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput))
 
-            
-
-
     def updateWeights(self):
         #TODO: Update the weights of the network using the deltas (see exercise text)
-        for i in range(len(self.weightsInput)):
-            for j in range(len(self.hiddenActivations)):
-                self.weightsInput[i][j] += self.learningRate*(self.prevDeltaHidden[j]*self.prevInputActivations[i]-self.deltaHidden[j]*self.inputActivation[i])
+        for i in range(self.numInputs):
+            for j in range(self.numHidden):
+                self.weightsInput[i][j] = self.weightsInput[i][j] + self.learningRate*(self.prevDeltaHidden[j]*self.prevInputActivations[i]-self.deltaHidden[j]*self.inputActivation[i])
+        for i in range(self.numHidden):
+            self.weightsOutput[i] = self.weightsOutput[i] + self.learningRate*(self.prevHiddenActivations[i]*self.prevDeltaOutput-self.hiddenActivations[i]*self.deltaOutput)
 
     def backpropagate(self, oa, ob):
         self.computeOutputDelta(oa, ob)
@@ -163,5 +162,6 @@ class NN: #Neural Network
                     num_misses += 1
         print(num_misses)
         print(num_right)
+        
 
         return num_misses/(num_right+num_misses+0.0)
