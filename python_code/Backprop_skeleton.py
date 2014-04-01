@@ -86,15 +86,16 @@ class NN: #Neural Network
 
     def computeOutputDelta(self):
         #TODO: Implement the delta function for the output layer (see exercise text)
-        Pab = 1.0/(1+math.exp(self.prevOutputActivation+self.outputActivation))
-        self.prevDeltaOutput = logFuncDerivative(self.prevOutputActivation)*(1-Pab)
-        self.deltaOutput = logFuncDerivative(self.outputActivation)*(1-Pab)
+        Pab = 1.0/(1+math.exp(-self.prevOutputActivation+self.outputActivation))
+        self.prevDeltaOutput = logFuncDerivative(self.prevOutputActivation)*(1.0-Pab)
+        self.deltaOutput = logFuncDerivative(self.outputActivation)*(1.0-Pab)
+
 
     def computeHiddenDelta(self):
-        for i in range(len(self.prevHiddenActivations)):
+        for i in range(self.numHidden):
             self.prevDeltaHidden[i] = (logFuncDerivative(self.prevHiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput))
 
-        for i in range(len(self.hiddenActivations)):
+        for i in range(self.numHidden):
             self.deltaHidden[i]= (logFuncDerivative(self.hiddenActivations[i])*self.weightsOutput[i]*(self.prevDeltaOutput-self.deltaOutput))
 
     def updateWeights(self):
@@ -142,30 +143,27 @@ class NN: #Neural Network
         #end of for
         #TODO: Calculate the ratio of correct answers:
         #errorRate = numMisses/(numRight+numMisses)
-
+        
         num_right = 0
         num_misses = 0
         a_winner = False
         for pattern in patterns:
-            a = self.propagate(pattern[0].features)
-            b = self.propagate(pattern[1].features)
-            a_winner = a>b
-            print("propagate")
-            print(a)
-            print(b)
-            print(a_winner)
+            self.propagate(pattern[0].features)
+            self.propagate(pattern[1].features)
+            a_winner = self.prevOutputActivation>self.outputActivation
             if (a_winner):
                 if(pattern[0].rating>pattern[1].rating):
                     num_right += 1
-                else:
+                elif(pattern[0].rating<pattern[1].rating):
                     num_misses += 1
             else:
                 if(pattern[1].rating>pattern[0].rating):
                     num_right += 1
-                else:
+                elif(pattern[1].rating<pattern[0].rating):
                     num_misses += 1
         print(num_misses)
         print(num_right)
-        
+        #self.weights()
+        print(num_misses/(num_right+num_misses+0.0))
 
         return num_misses/(num_right+num_misses+0.0)

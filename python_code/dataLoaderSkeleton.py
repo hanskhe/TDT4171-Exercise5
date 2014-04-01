@@ -89,7 +89,7 @@ def runRanker(trainingset, testset):
     print("first")
     errorPercent = []
     errorPercent.append(nn.countMisorderedPairs(testPatterns))
-    numIterations = 3
+    numIterations = 25
     for i in range(numIterations):
         #Running 25 iterations, measuring testing performance after each round of training.
         #Training
