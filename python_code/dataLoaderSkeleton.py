@@ -97,11 +97,27 @@ def runRanker(trainingset, testset):
     #TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
     #Printing graph with pylab
 
-    plot(range(1,numIterations+2),test_error_percent, label="Test set")
-    plot(range(1,numIterations+2),training_error_percent, label="Training set")
-    legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
-    ylim([0,1])
-    show()
+    #plot(range(1,numIterations+2),test_error_percent, label="Test set")
+    #plot(range(1,numIterations+2),training_error_percent, label="Training set")
+    #legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
+    #ylim([0,1])
+    #show()
+    return test_error_percent, training_error_percent
 
 
-runRanker("../data_sets/train.txt","../data_sets/test.txt")
+total_test = [0.0]*26
+total_training = [0.0]*26
+for i in range(0,5):
+    test, training = runRanker("../data_sets/train.txt","../data_sets/test.txt")
+    for j in range(len(test)):
+        total_test[j] += test[j]
+        total_training += training[j]
+
+total_test = [x/5 for x in total_test]
+total_training = [x/5 for x in total_training]
+
+plot(range(1,27),total_test, label="Test set")
+plot(range(1,27), total_training, label="Training set")
+legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
+ylim([0,1])
+show()
