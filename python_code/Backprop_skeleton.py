@@ -161,8 +161,6 @@ class NN: #Neural Network
                     num_right += 1
                 elif(pattern[1].rating<pattern[0].rating):
                     num_misses += 1
-        print(num_misses)
-        print(num_right)
         #self.weights()
         print(num_misses/(num_right+num_misses+0.0))
 

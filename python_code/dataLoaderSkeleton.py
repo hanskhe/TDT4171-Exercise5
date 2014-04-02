@@ -46,7 +46,6 @@ class dataHolder:
 
 
 def runRanker(trainingset, testset):
-    #TODO: Insert the code for training and testing your ranker here.
     #Dataholders for training and testset
     dhTraining = dataHolder(trainingset)
     dhTesting = dataHolder(testset)
@@ -54,8 +53,6 @@ def runRanker(trainingset, testset):
     #Creating an ANN instance - feel free to experiment with the learning rate (the third parameter).
     nn = Bp.NN(46,10,0.001)
 
-    #TODO: The lists below should hold training patterns in this format: [(data1Features,data2Features), (data1Features,data3Features), ... , (dataNFeatures,dataMFeatures)]
-    #TODO: The training set needs to have pairs ordered so the first item of the pair has a higher rating.
     trainingPatterns = [] #For holding all the training patterns we will feed the network
     testPatterns = [] #For holding all the test patterns we will feed the network
     for qid in dhTraining.dataset.keys():
@@ -68,8 +65,6 @@ def runRanker(trainingset, testset):
                         trainingPatterns.append((dataInstance[i],dataInstance[j]))
                     else:
                         trainingPatterns.append((dataInstance[j],dataInstance[i]))
-        #TODO: Store the training instances into the trainingPatterns array. Remember to store them as pairs, where the first item is rated higher than the second.
-        #TODO: Hint: A good first step to get the pair ordering right, is to sort the instances based on their rating for this query. (sort by x.rating for each x in dataInstance)
 
     for qid in dhTesting.dataset.keys():
         #This iterates through every query ID in our test set
@@ -82,13 +77,13 @@ def runRanker(trainingset, testset):
                         testPatterns.append((dataInstance[i],dataInstance[j]))
                     else:
                         testPatterns.append((dataInstance[j],dataInstance[i]))
-        #TODO: Store the test instances into the testPatterns array, once again as pairs.
-        #TODO: Hint: The testing will be easier for you if you also now order the pairs - it will make it easy to see if the ANN agrees with your ordering.
 
     #Check ANN performance before training
     print("first")
-    errorPercent = []
-    errorPercent.append(nn.countMisorderedPairs(testPatterns))
+    test_error_percent = []
+    training_error_percent = []
+    test_error_percent.append(nn.countMisorderedPairs(testPatterns))
+    training_error_percent.append(nn.countMisorderedPairs(trainingPatterns))
     numIterations = 25
     for i in range(numIterations):
         #Running 25 iterations, measuring testing performance after each round of training.
@@ -96,11 +91,15 @@ def runRanker(trainingset, testset):
         nn.train(trainingPatterns,iterations=1)
         #Check ANN performance after training.
         print("Iteration #" + str(i))
-        errorPercent.append(nn.countMisorderedPairs(testPatterns))
+        test_error_percent.append(nn.countMisorderedPairs(testPatterns))
+        training_error_percent.append(nn.countMisorderedPairs(trainingPatterns))
 
     #TODO: Store the data returned by countMisorderedPairs and plot it, showing how training and testing errors develop.
     #Printing graph with pylab
-    plot(range(1,numIterations+2),errorPercent)
+
+    plot(range(1,numIterations+2),test_error_percent, label="Test set")
+    plot(range(1,numIterations+2),training_error_percent, label="Training set")
+    legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
     ylim([0,1])
     show()
 
