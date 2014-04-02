@@ -111,7 +111,7 @@ for i in range(0,5):
     test, training = runRanker("../data_sets/train.txt","../data_sets/test.txt")
     for j in range(len(test)):
         total_test[j] += test[j]
-        total_training += training[j]
+        total_training[j] += training[j]
 
 total_test = [x/5 for x in total_test]
 total_training = [x/5 for x in total_training]
