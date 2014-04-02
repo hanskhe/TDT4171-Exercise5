@@ -104,18 +104,23 @@ def runRanker(trainingset, testset):
     #show()
     return test_error_percent, training_error_percent
 
-
+#Method for calculating the average of 5 runs.
+#Initialize empty lists
 total_test = [0.0]*26
 total_training = [0.0]*26
 for i in range(0,5):
+    #Run the program 5 times
     test, training = runRanker("../data_sets/train.txt","../data_sets/test.txt")
     for j in range(len(test)):
+        #Add results for this run to the lists of results
         total_test[j] += test[j]
         total_training += training[j]
 
+#Average the results
 total_test = [x/5 for x in total_test]
 total_training = [x/5 for x in total_training]
 
+#Plot graphs
 plot(range(1,27),total_test, label="Test set")
 plot(range(1,27), total_training, label="Training set")
 legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=0.)
