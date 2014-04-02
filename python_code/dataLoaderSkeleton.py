@@ -114,7 +114,7 @@ for i in range(0,5):
     for j in range(len(test)):
         #Add results for this run to the lists of results
         total_test[j] += test[j]
-        total_training += training[j]
+        total_training[j] += training[j]
 
 #Average the results
 total_test = [x/5 for x in total_test]
